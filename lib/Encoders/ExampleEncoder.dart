@@ -1,6 +1,7 @@
 import 'EncoderBase.dart';
 import 'dart:async';
 
+// This encoder serves as an example/template for what an encoder implementation might look like.  It doesn't perform any operation on data, input is passed through as output.
 class ExampleEncoder implements Encoder {
 
 	String encoderKey = "XMPLENCO";

@@ -2,6 +2,7 @@ import 'EncoderBase.dart';
 import 'dart:async';
 import '../IO.dart';
 
+// This encoder serves as an example/template for what an encoder implementation with Temp Files might look like.  It doesn't perform any operation on data, input is passed through as output.
 class ExampleEncoderWithTempFile implements Encoder {
 
 	String encoderKey = "XMPLTEMP";

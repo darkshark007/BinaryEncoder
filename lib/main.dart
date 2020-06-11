@@ -3,7 +3,7 @@ import 'dart:io';
 import 'IO.dart';
 import 'dart:math';
 
-// Encoders
+// Available Encoders
 import 'Encoders/EncoderBase.dart';
 import 'Encoders/ExampleEncoder.dart';
 import 'Encoders/ExampleEncoderWithTempFile.dart';
@@ -31,16 +31,16 @@ void main() async {
 		}
 	}
 
+	// Prompt the user to determine which operation to perform
 	int operation = await getInt(
-			"Perform Operation:\n[0] Encode\n[1] Decode\n[2] Fill",
+			"Perform Operation:\n[0] Encode\n[1] Decode\n[2] Generate",
 			min: 0,
 			max: 2);
 
 	if (operation == 2) {
-		fill();
+		generate();
 	} else {
 		File fileIn = await getFile("Input file:", true);
-
 
 		if (operation == 0) encode(fileIn);
 		if (operation == 1) decode(fileIn);
@@ -49,7 +49,10 @@ void main() async {
 }
 
 
+// The operation for encoding files.
+// Takes as input a file to encode
 void encode(File fileIn) async {
+	// TODO: Add better error handling for incorrectly encoded files
 	Stream<List<int>> inputStream = readFile(fileIn);
 	StreamController<List<int>> encodeStream = new StreamController();
 	Stream<List<int>> tmpOutStream = encodeStream.stream;
@@ -61,6 +64,7 @@ void encode(File fileIn) async {
 	bool cont = true;
 	String encodings = "";
 	while (cont) {
+		// Prompt the user for one or more encoder transformations to perform on the selected file.
 		int encoder = await getInt("Select Encoder:\n${encoderString}\n> ", min: 0, max: (decoderIndex-1));
 
 		print('Encoding with encoder ${decoderList[encoder].encoderKey}');
@@ -78,11 +82,15 @@ void encode(File fileIn) async {
 
 	File outFile = File('EncodedFile.txt');
 	var writeStream = outFile.openWrite();
+	// TODO: Instead of appending all the encoding-tags at once, I should append each one at each layer of encoding
 	writeStream.add("${encodings}|".codeUnits);
 	tmpOutStream.listen((List<int> data) => writeStream.add(data), onDone: () => writeStream.close());
 }
 
+// The operation for decoding files.
+// Takes as input a file to decode
 void decode(File fileIn) {
+	// TODO: Add better error handling for incorrectly decoded files
 	Stream<List<int>> inputStream = readFile(fileIn);
 	StreamController<List<int>> encodeStream = new StreamController();
 	StreamController<List<int>> writeStream = new StreamController();
@@ -120,14 +128,16 @@ void decode(File fileIn) {
 
 }
 
-void fill() async {
+// The operation for creating a file filled with randomly generated data of specified size.
+void generate() async {
+	// TOOD: Fix this.  This functionality currently doesn't work quite as intended.
 	double convRatio = 68403.473613894455578;
-	int diskSpace = await getInt("Free disk space? (GB)");
-	int diskConverted = (((diskSpace*0.95)-10) * convRatio).floor();
+	num diskSpace = await getNum("Size? (GB)");
+	num diskConverted = (((diskSpace*0.95)-10) * convRatio).floor();
 	List<File> tmpFiles = new List();
-	int fileSize = 10000;
+	num fileSize = 10000;
 	int iteration = 2;
-	int diskUsed = 0;
+	num diskUsed = 0;
 	void writeFile(File file) async {
 		tmpFiles.add(file);
 		diskUsed += fileSize;

@@ -2,6 +2,7 @@ import 'EncoderBase.dart';
 import 'dart:async';
 import '../IO.dart';
 
+// This encoder takess in data and encodes it by outputting it in reverse order.
 class EncoderReverse implements Encoder {
 
 	String encoderKey = "XMPLREVE";
@@ -12,7 +13,7 @@ class EncoderReverse implements Encoder {
 		StreamController outputStream = new StreamController<List<int>>();
 		List<Stream<List<int>>> streams = new List();
 
-		// Do Stuff with the stream input
+		// We cant start outputting the data until we reach the end, because we need to start at the end, so for now we will take input data we see and write it to temp files until we get to the end.
 		void process(List<int> newInput) async {
 			if (newInput == null) return;
 
@@ -24,6 +25,7 @@ class EncoderReverse implements Encoder {
 		}
 
 		input.listen(process, onDone: () async {
+			// Once the input stream completes, start reading the data we saved to temp files in the reverse order and outputting it
 			var idx = 0;
 			void readStream(Stream<List<int>> stream) {
 				stream.listen((List<int> data) => outputStream.add(data.reversed.toList()), onDone: () {
@@ -41,6 +43,7 @@ class EncoderReverse implements Encoder {
 		return outputStream.stream;
 	}
 
+	// The decoding process for this algorithm is the same as the encoding process.
 	@override
 	Stream<List<int>> decode(Stream<List<int>> input) => encode(input);
 }
