@@ -4,7 +4,7 @@ This is a Library for experimenting with binary encoding/compression algorithms.
 
 # How to get Started
 1. Clone the repo
-1. You may need to install (`dart`)[https://dart.dev/]
+1. You may need to install [`dart`](https://dart.dev/)
 1. You can run the app from the command line with `dart lib/main.dart`
 
 

@@ -13,7 +13,7 @@ class EncoderHuffmanCompression implements Encoder {
 		StreamController outputStream = new StreamController<List<int>>();
 		List<Stream<List<int>>> streams = new List();
 
-		// We cant start outputting the data until we reach the end, because we need to start at the end, so for now we will take input data we see and write it to temp files until we get to the end.
+		// We cant start outputting the data until we reach the end, so for now we will take input data we see and write it to temp files until we get to the end.
 		Map<int, int> dataMap = {};
 		void process(List<int> newInput) async {
 			if (newInput == null) return;
