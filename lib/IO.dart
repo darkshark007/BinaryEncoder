@@ -137,6 +137,7 @@ Stream<List<int>> readFile(File inputFile) {
 // Returns a stream.  Once the input stream as finished, this stream will read back the contents written to the temp file.
 // Once the output stream has been consumed, the temp file will close and be removed.
 // Optionally, a function handler can be passed in which will be called with the data from the input stream.  This can be useful for pre-processing.
+// TODO: What was the usecase for the taskhandler, again?
 int tmpCount = 0;
 Stream<List<int>> readWriteTempFile(Stream<List<int>> inputStream, TaskRunner handler) {
   // TODO: Can I/Should I put a limit on number of tmp files open at one time?

@@ -9,6 +9,8 @@ import 'Encoders/ExampleEncoder.dart';
 import 'Encoders/ExampleEncoderWithTempFile.dart';
 import 'Encoders/EncoderReverse.dart';
 import 'Encoders/EncoderPassword.dart';
+import 'Encoders/EncoderHuffmanCompression.dart';
+
 
 var decoderList = {};
 var decoderIndex = 0;
@@ -20,6 +22,7 @@ void main() async {
 	decoderList[decoderIndex++] = new EncoderReverse();
 	decoderList[decoderIndex++] = new EncoderPassword();
 	decoderList[decoderIndex++] = new EncoderEmbeddedPassword();
+	decoderList[decoderIndex++] = new EncoderHuffmanCompression();
 	for (var i = 0; i < decoderIndex; i++ ) {
 		if (decoderList[decoderList[i].encoderKey] != null) {
 			print('ERROR, EncoderKey already exists ${decoderList[i].encoderKey}');
