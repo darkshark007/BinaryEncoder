@@ -20,7 +20,7 @@ class EncoderHuffmanCompression implements Encoder {
 
 			StreamController tmpStreamController = new StreamController<List<int>>()
 				..add(newInput);
-			Stream tmpStream = readWriteTempFile(tmpStreamController.stream, (List<int> _) {});
+			Stream tmpStream = await readWriteTempFile(tmpStreamController.stream, (List<int> _) {});
 			streams.add(tmpStream);
 			tmpStreamController.close();
 

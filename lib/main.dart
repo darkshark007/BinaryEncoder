@@ -116,7 +116,7 @@ void decode(File fileIn) {
 				if (!outputFileIsSetUp) {
 					outputFileIsSetUp = true;
 					String fileName = "";
-					while (String.fromCharCode(data[0]) != "|") {
+					while (data.length > 1 && String.fromCharCode(data[0]) != "|") {
 						fileName += String.fromCharCode(data[0]);
 						data = data.sublist(1);
 					}

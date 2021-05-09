@@ -22,7 +22,7 @@ class ExampleEncoderWithTempFile implements Encoder {
 			}
 			if (newInput == null) return;
 
-			print('Outputting p1.${myId}!!! ${newInput}');
+			// print('Outputting p1.${myId}!!! ${newInput}');
 		}
 
 		// Do Stuff with the stream input
@@ -32,15 +32,17 @@ class ExampleEncoderWithTempFile implements Encoder {
 			}
 			if (newInput == null) return;
 
-			print('Outputting p2.${myId}!!! ${newInput}');
+			// print('Outputting p2.${myId}!!! ${newInput}');
 			outputStream.add(newInput);
 		}
 
-		readWriteTempFile(input, processPass1)
-				.listen(processPass2, onDone: () async {
-			isDone = true;
-			await processPass2(null);
-			outputStream.close();
+		readWriteTempFile(input, processPass1).then((stream) {
+			stream.listen(processPass2, onDone: () async {
+				isDone = true;
+				await processPass2(null);
+				outputStream.close();
+			});
+
 		});
 
 		return outputStream.stream;

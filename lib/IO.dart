@@ -132,6 +132,13 @@ Stream<List<int>> readFile(File inputFile) {
 }
 
 
+Future waitForOpenFile() async {
+  while (filesOpen > 50) {
+    // stdout.write("Waiting for file slots to open....\n> ");
+    await new Future.delayed(const Duration(milliseconds: 5), () => null);
+  }
+}
+
 // Wrapper handler for managing a Temp file.
 // Takes a stream as input, which should contain the content to write to the temp file.
 // Returns a stream.  Once the input stream as finished, this stream will read back the contents written to the temp file.
@@ -139,7 +146,8 @@ Stream<List<int>> readFile(File inputFile) {
 // Optionally, a function handler can be passed in which will be called with the data from the input stream.  This can be useful for pre-processing.
 // TODO: What was the usecase for the taskhandler, again?
 int tmpCount = 0;
-Stream<List<int>> readWriteTempFile(Stream<List<int>> inputStream, TaskRunner handler) {
+int filesOpen = 0;
+Future<Stream<List<int>>> readWriteTempFile(Stream<List<int>> inputStream, TaskRunner handler) async {
   // TODO: Can I/Should I put a limit on number of tmp files open at one time?
   var fileCount = tmpCount++;
   var fileName = 'tmp${fileCount}.tmp';
@@ -149,21 +157,27 @@ Stream<List<int>> readWriteTempFile(Stream<List<int>> inputStream, TaskRunner ha
   StreamController readStream = new StreamController<List<int>>();
 
   // Write the output file
+  await waitForOpenFile();
   var writeStream = outFile.openWrite();
+  filesOpen++;
 	inputStream.listen((List<int> out) {
 	  handler(out);
 	  if (out != null) writeStream.add(out);
 	}, onDone: () async {
     // The input stream has completed, so start writing the output stream
 		await writeStream.close();
+    filesOpen--;
 		handler(null);
+    await waitForOpenFile();
     Stream<List<int>> inputFileStream = outFile.openRead();
+    filesOpen++;
     inputFileStream.listen((List<int> data) {
       readStream.add(data);
     }, onDone: () {
       // Clean up the temp file
       readStream.close();
       outFile.delete();
+      filesOpen--;
     });
 	});
 
